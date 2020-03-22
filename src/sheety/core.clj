@@ -20,7 +20,7 @@
 
 (defn credentials
   ([transport]
-   (credentials "credentials.json"))
+   (credentials transport "credentials.json"))
   ([transport creds]
    (with-open [rdr (io/reader (io/resource creds))]
      (let [client-secrets (GoogleClientSecrets/load JSON_FACTORY rdr)
