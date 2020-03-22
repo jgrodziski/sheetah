@@ -15,7 +15,7 @@ You need to retrieve the identifier of your sheet, the URL contains it, and put 
 
 ```clojure
 
-(require '[sheety.core :as sheet]')
+(require '[sheety.core :as sheet])
 (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "B2:E17" )
 ;; you could also use a named range
 (sheet/rows "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "my-named-range" )
