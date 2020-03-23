@@ -1,4 +1,4 @@
-(ns sheety.core-test
+(ns sheetah.core-test
   (:require [clojure.test :refer :all]
             [sheety.core :refer :all]))
 
