@@ -46,6 +46,18 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
 
 (-> (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10")
     (get "values")
+    st/tree)
+; tree function doesn't returns the row index so it's inconvenient if we want to retrieve data in a 2d array on the right of the tree
+;=> ["val1a"
+;      ["val2a" "val2b" "val2c" 
+;         ["val3a" 
+;             ["val4a"]
+;          "val3b" 
+;             ["val4b" "val4c"]]]]
+
+
+(-> (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10")
+    (get "values")
     st/tree-with-idx)
 ;=> [[{:val "val1a", :row 0}
 ;    [{:val "val2a", :row 1}
