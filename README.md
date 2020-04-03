@@ -28,17 +28,17 @@ You need to retrieve the identifier of your sheet, the URL contains it, and put 
 
 Given a structure like the following in the sheet:
 
-| level l | level 2 | level 3 | level 4 |
+| level 1 | level 2 | level 3 | level 4 |
 |---------|---------|---------|---------|
-| val1a   |         |         |         |
-|         | val2a   |         |         |
-|         | val2b   |         |         |
-|         | val2c   |         |         |
-|         |         | val3a   |         |
-|         |         |         | val4a   |
-|         |         | val3b   |         |
-|         |         |         | val4b   |
-|         |         |         | val4c   |
+| `val1a` |         |         |         |
+|         | `val2a` |         |         |
+|         | `val2b` |         |         |
+|         | `val2c` |         |         |
+|         |         | `val3a` |         |
+|         |         |         | `val4a` |
+|         |         | `val3b` |         |
+|         |         |         | `val4b` |
+|         |         |         | `val4c` |
 
 The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree given the columns containing the values returned by the functions in `sheetah/core` ns.
 ```clojure
