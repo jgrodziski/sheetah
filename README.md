@@ -43,11 +43,10 @@ Given a structure like the following in the sheet:
 The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree given the columns containing the values returned by the functions in `sheetah/core` ns.
 ```clojure
 (require [sheetah.tree :as st]')
-(st/tree-with-idx (get (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10") "values"))
+
 (-> (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10")
     (get "values")
     st/tree-with-idx)
-    
 ;=> [[{:val "val1a", :row 0}
 ;    [{:val "val2a", :row 1}
 ;     {:val "val2b", :row 2}
@@ -60,7 +59,6 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
     (get "values")
     st/tree-with-idx
     st/treemap-with-idx)
-
 ;=> {"val1a"
 ;    [0
 ;     {"val2a" [1 nil],
