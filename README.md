@@ -25,6 +25,7 @@ You need to retrieve the identifier of your sheet, the URL contains it, and put 
 ### Transform values as a tree
 
 2d array are easy to get but a tree structure is more interesting
+
 Given a structure like the following in the sheet:
 
 | level l | level 2 | level 3 | level 4 |
@@ -40,7 +41,7 @@ Given a structure like the following in the sheet:
 |         |         |         | val4c   |
 
 The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree given the columns containing the values returned by the functions in `sheetah/core` ns.
-```
+```clojure
 (require [sheetah.tree :as st]')
 (st/tree-with-idx (get (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10") "values"))
 (-> (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10")
