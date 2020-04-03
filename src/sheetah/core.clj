@@ -15,8 +15,8 @@
            com.google.api.services.sheets.v4.model.ValueRange))
 
 (def JSON_FACTORY (JacksonFactory/getDefaultInstance))
-(def FILE_DATA_STORE_FACTORY (FileDataStoreFactory. (io/file "tokens")))
-(def APPLICATION_NAME "gsheetapidesc-v0.0.1")
+(def FILE_DATA_STORE_FACTORY (FileDataStoreFactory. (io/file "/tmp/tokens")))
+(def APPLICATION_NAME "sheetah-v0.0.1")
 
 (defn credentials
   ([transport]

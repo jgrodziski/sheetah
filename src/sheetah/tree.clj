@@ -144,4 +144,6 @@
   (treemap-with-idx (tree-with-idx [["lvl1"] ["" "lvl2"] ["" "" "lvl3a" "lvl3b"] ["" "" "" "" "lvl4a"]]))
   ;; {"lvl1" [0 {"lvl2" [1 {"lvl3a" [2 nil], "lvl3b" [3 {"lvl4a" [4 nil]}]}]}]}
 
+  (-> (sheet/columns "16Q1iN4mJ_-nURLQxTdoWoYoal7YxuvcdKo3tgjCjm1M" "Diffusion-API-Endpoints" "noticesInitResponseStructure")
+      (get "values"))
   )
