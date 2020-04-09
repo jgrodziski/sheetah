@@ -2,6 +2,15 @@
 
 Clojure library for convenient access to Google Sheet through its Java client SDK.
 
+## Installation
+
+### deps.edn
+
+```clojure
+{sheetah {:git/url "git@github.com:jgrodziski/sheetah.git" 
+          :sha "c8acd8df7a7a290c18fb7c24c0a5d36a1092fd7a"}}
+```
+
 ## Usage
 
 ### Credentials
