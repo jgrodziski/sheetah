@@ -1,4 +1,5 @@
-(ns sheetah.2darray)
+(ns sheetah.2darray
+  (:require [clojure.string :refer [trim]]))
 
 (defmulti normalize* :col)
 
@@ -10,7 +11,7 @@
   (normalize-detail [[string TRUE] [integer FALSE yyyyy]] [:type :required :description])
   => ({:type string :required TRUE :description -} {:type integer :required FALSE :description yyyyy})"
   ([details col-names]
-   (normalize-details details col-names "none"))
+   (normalize-details-old details col-names "none"))
   ([details col-names default-value]
    (let [normalize-fn (fn [row]
                         (let [norm-length     (count col-names)
