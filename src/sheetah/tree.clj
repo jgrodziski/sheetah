@@ -134,6 +134,15 @@
                (if val (assoc acc val [row nil]) acc)
                (recur (children c) (assoc acc val [row nil]))))))))))
 
+(defn filter-treemap [treemap filter-fn]
+  (if treemap
+    (reduce-kv (fn [acc field [infos child :as val]]
+                 (if (filter-fn field val )
+                   (assoc acc field [infos (filter-treemap child filter-fn)])
+                   acc)) {} treemap)
+    nil))
+
+
 (comment
   (tree [[:a ""  ""  :b :c :d ""  ""  ""  ""  ""  ""   ""    ""]
          ["" :aa :ab "" "" "" :da :db :dc :de :df ""   ""    ""]
