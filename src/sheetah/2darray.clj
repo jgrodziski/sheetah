@@ -45,12 +45,12 @@
 (defn assoc-fields-details
   "Given an indexed treemap and the normalized details of the corresponding structure,
   associate the details of each row in the treemap"
-  [treemap details]
+  [treemap norm-details]
   (into {} (map (fn [[field [row child]]]
-                  (let [child (if child (assoc-fields-details child details) nil)
-                        row-details (if (>= row (count (:rows details)))
+                  (let [child (if child (assoc-fields-details child norm-details) nil)
+                        row-details (if (>= row (count norm-details))
                                       nil
-                                      (nth details row))]
+                                      (nth norm-details row))]
                     [field [row-details child]])) treemap)))
 
 
