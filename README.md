@@ -37,17 +37,18 @@ You need to retrieve the identifier of your sheet, the URL contains it, and put 
 
 Given a structure like the following in the sheet:
 
-| level 1 | level 2 | level 3 | level 4 |
-|---------|---------|---------|---------|
-| `val1a` |         |         |         |
-|         | `val2a` |         |         |
-|         | `val2b` |         |         |
-|         | `val2c` |         |         |
-|         |         | `val3a` |         |
-|         |         |         | `val4a` |
-|         |         | `val3b` |         |
-|         |         |         | `val4b` |
-|         |         |         | `val4c` |
+|    |   A     |    B    |    C    |    D    |
+|    | level 1 | level 2 | level 3 | level 4 |
+|----|---------|---------|---------|---------|
+|  2 | `val1a` |         |         |         |
+|  3 |         | `val2a` |         |         |
+|  4 |         | `val2b` |         |         |
+|  5 |         | `val2c` |         |         |
+|  6 |         |         | `val3a` |         |
+|  7 |         |         |         | `val4a` |
+|  8 |         |         | `val3b` |         |
+|  9 |         |         |         | `val4b` |
+| 10 |         |         |         | `val4c` |
 
 The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree given the columns containing the values returned by the functions in `sheetah/core` ns.
 ```clojure
@@ -89,6 +90,103 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
 ;                              "val4c" [8 nil]}]}]}]}
 
     
+```
+
+### 2d array tabular data with tree data
+
+Consider the following tabular and tree data in the google sheet :
+
+|    | A       | B       | C       | D       | E            | F            | G                | H                          |
+|    | level 1 | level 2 | level 3 | level 4 | details-col1 | details-col2 | details-col3     | details-col4               |
+|    | :--     | :--     | :--     | :--     | :--          | :--          | :--              | :--                        |
+|  2 | val1a   |         |         |         | TRUE         | string       | val1, val2, val3 | val1a is a super thing     |
+|  3 |         | val2a   |         |         | FALSE        | string       | val1             | val2a attribute is awesome |
+|  4 |         | val2b   |         |         | TRUE         | integer      | val2             | nothing to say             |
+|  5 |         | val2c   |         |         | TRUE         | integer      | val1, val2       | Humm                       |
+|  6 |         |         | val3a   |         | TRUE         | object       | val1, val2, val3 | Ho                         |
+|  7 |         |         |         | val4a   | TRUE         | string       | val1, val2, val3 | Ha                         |
+|  8 |         |         | val3b   |         | FALSE        | object       | val1, val2, val3 | Hey                        |
+|  9 |         |         |         | val4b   | TRUE         | string       | val1, val2, val3 | Yo                         |
+| 10 |         |         |         | val4c   | TRUE         | boolean      |                  |                            |
+
+You can associate teh tabular data with the tree (see previous section) with the following code:
+```clojure
+
+(def tree (-> (sheet/columns "16q1in4mj_-nurlqxtpowoyoal7yxujcdko9tgjwjm1m" "your-sheet-name" "A2:D10")
+              (get "values")
+              st/tree-with-idx
+              st/treemap-with-idx))
+(def table (-> (sheet/rows  "16q1in4mj_-nurlqxtpowoyoal7yxujcdko9tgjwjm1m" "your-sheet-name" "E2:H10")
+               (get "values")))
+
+(assoc-rows tree table)
+;;=> 
+;; {"val1a"
+;;  [["TRUE" "string" "val1, val2, val3"]
+;;   {"val2a" [["FALSE" "string" "val1 "] nil],
+;;    "val2b" [["TRUE" "integer" "val2"] nil],
+;;    "val2c"  [["TRUE" "integer" "val1, val2 "]
+;;              {"val3a" [["TRUE" "string" "val1, val2, val3"]
+;;                        {"val4a" [["TRUE" "string" "val1, val2, val3"] nil]}],
+;;               "val3b" [["FALSE" "boolean" "val1, val2, val3"]
+;;                        {"val4b" [["TRUE" "boolean" "val1, val2, val3"] nil],
+;;                         "val4c" [["TRUE" "string"] nil]}]}]}]}
+
+(assoc-rows tree (normalize table [{:name :details-col1 :fn (fn [x] (if (= x "TRUE") true false))}
+                                   {:name :details-col2 :fn (fn [x] (if (#{ "string" "integer" "object" "boolean"} x) x "string"))}
+                                   {:name :details-col3}
+                                   {:name :details-col4}]))
+
+```
+
+### Normalize the data found in the table
+
+The value may needs some process before being handled
+
+```clojure
+
+(def table-data (sheet/rows  "16q1in4mj_-nurlqxtpowoyoal7yxujcdko9tgjwjm1m" "your-sheet-name" "E2:H10"))
+;; =>
+;; [["TRUE" "string" "val1, val2, val3"]
+;;  ["FALSE" "string" "val1 "]
+;;  ["TRUE" "integer" "val2"]
+;;  ["TRUE" "integer" "val1, val2 "]
+;;  ["TRUE" "string" "val1, val2, val3"]
+;;  ["TRUE" "string" "val1, val2, val3"]
+;;  ["FALSE" "boolean" "val1, val2, val3"]
+;;  ["TRUE" "boolean" "val1, val2, val3"]
+;;  ["TRUE" "string"]]
+
+(normalize table-data [{:name :detail-1 :fn (fn [x] (if (= x "TRUE") true false))}
+                       {:name :detail-2 :fn (fn [x] (if (#{ "string" "integer" "object" "boolean"} x) x "string"))}
+                       {:name :detail-3}
+                       {:name :detail-4}])
+;; => 
+;; ({:detail-1 true,
+;;  :detail-2 "string",
+;;  :detail-3 "val1, val2, val3",
+;;  :detail-4 ""}
+;; {:detail-1 false, :detail-2 "string", :detail-3 "val1", :detail-4 ""}
+;; {:detail-1 true, :detail-2 "integer", :detail-3 "val2", :detail-4 ""}
+;; {:detail-1 true, :detail-2 "integer", :detail-3 "val1, val2", :detail-4 ""}
+;; {:detail-1 true,
+;;  :detail-2 "string",
+;;  :detail-3 "val1, val2, val3",
+;;  :detail-4 ""}
+;; {:detail-1 true,
+;;  :detail-2 "string",
+;;  :detail-3 "val1, val2, val3",
+;;  :detail-4 ""}
+;; {:detail-1 false,
+;;  :detail-2 "boolean",
+;;  :detail-3 "val1, val2, val3",
+;;  :detail-4 ""}
+;; {:detail-1 true,
+;;  :detail-2 "boolean",
+;;  :detail-3 "val1, val2, val3",
+;;  :detail-4 ""}
+;; {:detail-1 true, :detail-2 "string", :detail-3 "", :detail-4 ""})
+                                                   
 ```
 
 ## License
