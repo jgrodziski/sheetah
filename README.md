@@ -146,51 +146,36 @@ You can associate tabular data with the tree (see previous section) with the fol
 
 ### Normalize the data found in the table
 
-The values found in table (2d array) may needs some process before being handled
+The values found in table (vector of vector) may needs some process before being handled because the google sheet only returns String.
 
 ```clojure
 
 (def table-data (sheet/rows SHEET_ID "your-sheet-name" "E2:H10"))
-;; =>
-;; [["TRUE" "string" "val1, val2, val3"]
-;;  ["FALSE" "string" "val1 "]
-;;  ["TRUE" "integer" "val2"]
-;;  ["TRUE" "integer" "val1, val2 "]
-;;  ["TRUE" "string" "val1, val2, val3"]
-;;  ["TRUE" "string" "val1, val2, val3"]
+;; => Google sheets only returns String value (even for numbers) and omits the empty cells so a normalize function is useful
+;; [["TRUE"  "string"  "val1, val2, val3"]
+;;  ["FALSE" "string"  "val1 "]
+;;  ["TRUE"  "integer" "val2"]
+;;  ["TRUE"  "integer" "val1, val2 "]
+;;  ["TRUE"  "string"  "val1, val2, val3"]
+;;  ["TRUE"  "string"  "val1, val2, val3"]
 ;;  ["FALSE" "boolean" "val1, val2, val3"]
-;;  ["TRUE" "boolean" "val1, val2, val3"]
-;;  ["TRUE" "string"]]
+;;  ["TRUE"  "boolean" "val1, val2, val3"]
+;;  ["TRUE"  "string"]]
 
 (normalize table-data [{:name :detail-1 :fn (fn [x] (if (= x "TRUE") true false))}
                        {:name :detail-2 :fn (fn [x] (if (#{ "string" "integer" "object" "boolean"} x) x "string"))}
                        {:name :detail-3}
                        {:name :detail-4}])
 ;; => 
-;; ({:detail-1 true,
-;;  :detail-2 "string",
-;;  :detail-3 "val1, val2, val3",
-;;  :detail-4 ""}
-;; {:detail-1 false, :detail-2 "string", :detail-3 "val1", :detail-4 ""}
-;; {:detail-1 true, :detail-2 "integer", :detail-3 "val2", :detail-4 ""}
-;; {:detail-1 true, :detail-2 "integer", :detail-3 "val1, val2", :detail-4 ""}
-;; {:detail-1 true,
-;;  :detail-2 "string",
-;;  :detail-3 "val1, val2, val3",
-;;  :detail-4 ""}
-;; {:detail-1 true,
-;;  :detail-2 "string",
-;;  :detail-3 "val1, val2, val3",
-;;  :detail-4 ""}
-;; {:detail-1 false,
-;;  :detail-2 "boolean",
-;;  :detail-3 "val1, val2, val3",
-;;  :detail-4 ""}
-;; {:detail-1 true,
-;;  :detail-2 "boolean",
-;;  :detail-3 "val1, val2, val3",
-;;  :detail-4 ""}
-;; {:detail-1 true, :detail-2 "string", :detail-3 "", :detail-4 ""})
+;; ({:detail-1 true,  :detail-2 "string",  :detail-3 "val1, val2, val3", :detail-4 ""}
+;;  {:detail-1 false, :detail-2 "string",  :detail-3 "val1",             :detail-4 ""}
+;;  {:detail-1 true,  :detail-2 "integer", :detail-3 "val2",             :detail-4 ""}
+;;  {:detail-1 true,  :detail-2 "integer", :detail-3 "val1, val2",       :detail-4 ""}
+;;  {:detail-1 true,  :detail-2 "string",  :detail-3 "val1, val2, val3", :detail-4 ""}
+;;  {:detail-1 true,  :detail-2 "string",  :detail-3 "val1, val2, val3", :detail-4 ""}
+;;  {:detail-1 false, :detail-2 "boolean", :detail-3 "val1, val2, val3", :detail-4 ""}
+;;  {:detail-1 true,  :detail-2 "boolean", :detail-3 "val1, val2, val3", :detail-4 ""}
+;;  {:detail-1 true,  :detail-2 "string",  :detail-3 "",                 :detail-4 ""})
                                                    
 ```
 
