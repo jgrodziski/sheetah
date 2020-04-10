@@ -139,7 +139,7 @@
   associate the data of each row in the treemap"
   [treemap rows]
   (into {} (map (fn [[field [row child]]]
-                  (let [child (if child (assoc-rows child rows) nil)
+                  (let [child (if child (assoc-table-rows child rows) nil)
                         row-datas (if (>= row (count rows))
                                     nil
                                     (nth rows row))]
