@@ -1,6 +1,23 @@
 # Sheetah
 
-Clojure library for convenient access to Google Sheet through its Java client SDK.
+Clojure library for convenient access and processing of data in a Google Sheet.
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Sheetah](#sheetah)
+    - [Installation](#installation)
+        - [deps.edn](#depsedn)
+    - [Usage](#usage)
+        - [Credentials](#credentials)
+        - [Read values from the google sheets](#read-values-from-the-google-sheets)
+        - [Transform values as a tree](#transform-values-as-a-tree)
+        - [Tabular and tree data](#tabular-and-tree-data)
+        - [Normalize the data found in the table](#normalize-the-data-found-in-the-table)
+    - [License](#license)
+
+<!-- markdown-toc end -->
+
 
 ## Installation
 
@@ -8,7 +25,7 @@ Clojure library for convenient access to Google Sheet through its Java client SD
 
 ```clojure
 {sheetah {:git/url "git@github.com:jgrodziski/sheetah.git" 
-          :sha "c8acd8df7a7a290c18fb7c24c0a5d36a1092fd7a"}}
+          :sha "95fa50bad74f29e888cf9e9453c8e818803e84ec"}}
 ```
 
 ## Usage
