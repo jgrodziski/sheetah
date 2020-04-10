@@ -51,14 +51,15 @@ Given a structure like the following in the sheet:
 
 The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree given the columns containing the values returned by the functions in `sheetah/core` ns.
 ```clojure
-(require [sheetah.tree :as st]')
+(require '[sheetah.core :as sheet])
+(require '[sheetah.tree :as st])
 
 (def SHEET_ID "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" )
 
 (-> (sheet/columns SHEET_ID "your-sheet-name" "A2:D10")
     (get "values")
     st/tree)
-; tree function doesn't returns the row index so it's inconvenient if we want to retrieve data in a 2d array on the right of the tree
+; tree function doesn't returns the row index so it's inconvenient if we want to retrieve data as a table found on the right of the tree
 ;=> ["val1a"
 ;      ["val2a" "val2b" "val2c" 
 ;         ["val3a" 
@@ -70,7 +71,8 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
 (-> (sheet/columns SHEET_ID "your-sheet-name" "A2:D10")
     (get "values")
     st/tree-with-idx)
-;=> [[{:val "val1a", :row 0}
+; returns a tree with vector with the row index included in the returned data    
+;   [[{:val "val1a", :row 0}
 ;    [{:val "val2a", :row 1}
 ;     {:val "val2b", :row 2}
 ;     [{:val "val2c", :row 3}
@@ -82,7 +84,8 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
     (get "values")
     st/tree-with-idx
     st/treemap-with-idx)
-;=> {"val1a"
+; return a tree with map and keys with values found in the Google sheet, the row index is included as the first item of the child tuple
+; {"val1a"
 ;    [0
 ;     {"val2a" [1 nil],
 ;      "val2b" [2 nil],
@@ -93,9 +96,9 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
     
 ```
 
-### tabular and tree data
+### Tabular and tree data
 
-Consider the following tabular and tree data in the google sheet :
+Consider the following tabular and tree data in the google sheet:
 
 |     | level 1 | level 2 | level 3 | level 4 | details-col1 | details-col2 | details-col3     | details-col4               |
 | :-- | :--     | :--     | :--     | :--     | :--          | :--          | :--              | :--                        |
@@ -146,7 +149,7 @@ You can associate tabular data with the tree (see previous section) with the fol
 
 ### Normalize the data found in the table
 
-The values found in table (vector of vector) may needs some process before being handled because the google sheet only returns String.
+The values found in table (vector of vector) may needs some processing before being handled because the google sheet only returns String.
 
 ```clojure
 
