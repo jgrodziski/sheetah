@@ -37,7 +37,6 @@ You need to retrieve the identifier of your sheet, the URL contains it, and put 
 
 Given a structure like the following in the sheet:
 
-|    |   A     |    B    |    C    |    D    |
 |    | level 1 | level 2 | level 3 | level 4 |
 |----|---------|---------|---------|---------|
 |  2 | `val1a` |         |         |         |
@@ -54,7 +53,9 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
 ```clojure
 (require [sheetah.tree :as st]')
 
-(-> (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10")
+(def SHEET_ID "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" )
+
+(-> (sheet/columns SHEET_ID "your-sheet-name" "A2:D10")
     (get "values")
     st/tree)
 ; tree function doesn't returns the row index so it's inconvenient if we want to retrieve data in a 2d array on the right of the tree
@@ -66,7 +67,7 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
 ;             ["val4b" "val4c"]]]]
 
 
-(-> (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10")
+(-> (sheet/columns SHEET_ID "your-sheet-name" "A2:D10")
     (get "values")
     st/tree-with-idx)
 ;=> [[{:val "val1a", :row 0}
@@ -77,7 +78,7 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
 ;       [{:val "val3b", :row 6}
 ;        [{:val "val4b", :row 7} {:val "val4c", :row 8}]]]]]]]
 
-(-> (sheet/columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "A2:D10")
+(-> (sheet/columns SHEET_ID "your-sheet-name" "A2:D10")
     (get "values")
     st/tree-with-idx
     st/treemap-with-idx)
@@ -92,34 +93,38 @@ The functions `tree`, `tree-with-idx` and `treemap-with-idx` returns a tree give
     
 ```
 
-### 2d array tabular data with tree data
+### tabular and tree data
 
 Consider the following tabular and tree data in the google sheet :
 
-|    | A       | B       | C       | D       | E            | F            | G                | H                          |
-|    | level 1 | level 2 | level 3 | level 4 | details-col1 | details-col2 | details-col3     | details-col4               |
-|    | :--     | :--     | :--     | :--     | :--          | :--          | :--              | :--                        |
-|  2 | val1a   |         |         |         | TRUE         | string       | val1, val2, val3 | val1a is a super thing     |
-|  3 |         | val2a   |         |         | FALSE        | string       | val1             | val2a attribute is awesome |
-|  4 |         | val2b   |         |         | TRUE         | integer      | val2             | nothing to say             |
-|  5 |         | val2c   |         |         | TRUE         | integer      | val1, val2       | Humm                       |
-|  6 |         |         | val3a   |         | TRUE         | object       | val1, val2, val3 | Ho                         |
-|  7 |         |         |         | val4a   | TRUE         | string       | val1, val2, val3 | Ha                         |
-|  8 |         |         | val3b   |         | FALSE        | object       | val1, val2, val3 | Hey                        |
-|  9 |         |         |         | val4b   | TRUE         | string       | val1, val2, val3 | Yo                         |
-| 10 |         |         |         | val4c   | TRUE         | boolean      |                  |                            |
+|     | level 1 | level 2 | level 3 | level 4 | details-col1 | details-col2 | details-col3     | details-col4               |
+| :-- | :--     | :--     | :--     | :--     | :--          | :--          | :--              | :--                        |
+|   2 | val1a   |         |         |         | TRUE         | string       | val1, val2, val3 | val1a is a super thing     |
+|   3 |         | val2a   |         |         | FALSE        | string       | val1             | val2a attribute is awesome |
+|   4 |         | val2b   |         |         | TRUE         | integer      | val2             | nothing to say             |
+|   5 |         | val2c   |         |         | TRUE         | integer      | val1, val2       | Humm                       |
+|   6 |         |         | val3a   |         | TRUE         | object       | val1, val2, val3 | Ho                         |
+|   7 |         |         |         | val4a   | TRUE         | string       | val1, val2, val3 | Ha                         |
+|   8 |         |         | val3b   |         | FALSE        | object       | val1, val2, val3 | Hey                        |
+|   9 |         |         |         | val4b   | TRUE         | string       | val1, val2, val3 | Yo                         |
+|  10 |         |         |         | val4c   | TRUE         | boolean      |                  |                            |
 
-You can associate teh tabular data with the tree (see previous section) with the following code:
+You can associate tabular data with the tree (see previous section) with the following code:
 ```clojure
 
-(def tree (-> (sheet/columns "16q1in4mj_-nurlqxtpowoyoal7yxujcdko9tgjwjm1m" "your-sheet-name" "A2:D10")
+(require '[sheetah.core :as sheet])
+(require '[sheetah.table :as table])
+(require '[sheetah.tree :as tree])
+
+(def SHEET_ID "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" )
+(def tree (-> (sheet/columns SHEET_ID "your-sheet-name" "A2:D10")
               (get "values")
               st/tree-with-idx
               st/treemap-with-idx))
-(def table (-> (sheet/rows  "16q1in4mj_-nurlqxtpowoyoal7yxujcdko9tgjwjm1m" "your-sheet-name" "E2:H10")
+(def table (-> (sheet/rows  SHEET_ID "your-sheet-name" "E2:H10")
                (get "values")))
 
-(assoc-rows tree table)
+(tree/assoc-table-rows tree table)
 ;;=> 
 ;; {"val1a"
 ;;  [["TRUE" "string" "val1, val2, val3"]
@@ -132,20 +137,20 @@ You can associate teh tabular data with the tree (see previous section) with the
 ;;                        {"val4b" [["TRUE" "boolean" "val1, val2, val3"] nil],
 ;;                         "val4c" [["TRUE" "string"] nil]}]}]}]}
 
-(assoc-rows tree (normalize table [{:name :details-col1 :fn (fn [x] (if (= x "TRUE") true false))}
-                                   {:name :details-col2 :fn (fn [x] (if (#{ "string" "integer" "object" "boolean"} x) x "string"))}
-                                   {:name :details-col3}
-                                   {:name :details-col4}]))
+(tree/assoc-table-rows tree (normalize table [{:name :details-col1 :fn (fn [x] (if (= x "TRUE") true false))}
+                                              {:name :details-col2 :fn (fn [x] (if (#{ "string" "integer" "object" "boolean"} x) x "string"))}
+                                              {:name :details-col3}
+                                              {:name :details-col4}]))
 
 ```
 
 ### Normalize the data found in the table
 
-The value may needs some process before being handled
+The values found in table (2d array) may needs some process before being handled
 
 ```clojure
 
-(def table-data (sheet/rows  "16q1in4mj_-nurlqxtpowoyoal7yxujcdko9tgjwjm1m" "your-sheet-name" "E2:H10"))
+(def table-data (sheet/rows SHEET_ID "your-sheet-name" "E2:H10"))
 ;; =>
 ;; [["TRUE" "string" "val1, val2, val3"]
 ;;  ["FALSE" "string" "val1 "]

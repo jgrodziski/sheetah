@@ -134,6 +134,17 @@
                (if val (assoc acc val [row nil]) acc)
                (recur (children c) (assoc acc val [row nil]))))))))))
 
+(defn assoc-table-rows
+  "Given an indexed treemap and the normalized rows data of the corresponding structure,
+  associate the data of each row in the treemap"
+  [treemap rows]
+  (into {} (map (fn [[field [row child]]]
+                  (let [child (if child (assoc-rows child rows) nil)
+                        row-datas (if (>= row (count rows))
+                                    nil
+                                    (nth rows row))]
+                    [field [row-datas child]])) treemap)))
+
 (defn filter-treemap [treemap filter-fn]
   (if treemap
     (reduce-kv (fn [acc field [infos child :as val]]
