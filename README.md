@@ -5,19 +5,23 @@ Clojure library for convenient access and processing of data in a Google Sheet.
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
-- [Sheetah](#sheetah)
-    - [Installation](#installation)
-        - [deps.edn](#depsedn)
-    - [Usage](#usage)
-        - [Credentials](#credentials)
-        - [Read values from the google sheets](#read-values-from-the-google-sheets)
-        - [Transform values as a tree](#transform-values-as-a-tree)
-        - [Tabular and tree data](#tabular-and-tree-data)
-        - [Normalize the data found in the table](#normalize-the-data-found-in-the-table)
-    - [License](#license)
+- [Rationale](#rationale)
+- [Installation](#installation)
+    - [deps.edn](#depsedn)
+- [Usage](#usage)
+    - [Credentials](#credentials)
+    - [Read values from the google sheets](#read-values-from-the-google-sheets)
+    - [Transform values as a tree](#transform-values-as-a-tree)
+    - [Tabular and tree data](#tabular-and-tree-data)
+    - [Normalize the data found in the table](#normalize-the-data-found-in-the-table)
 
 <!-- markdown-toc end -->
 
+
+## Rationale
+
+[Google Sheet](https://docs.google.com/spreadsheets) is a nice solution for collaboratively editing datas, subsequently retrieving the data in Clojure for processing it is very useful. The lib is not intended for realtime access but more for offline data loading and processing.
+A use case I had was to work on API definition and structure, then generating some documentation and data schemas from the data in the Google Sheet. 
 
 ## Installation
 
