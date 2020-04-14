@@ -1,12 +1,9 @@
 (ns sheetah.tree-test
   (:require [sheetah.tree :as st :refer :all]
             [sheetah.core :as core]
-            [sheetah.core-test :refer [columns-table columns-tree rows-table rows-tree]]
+            [sheetah.core-test :refer [columns-table columns-tree columns-tree-with-duplicate rows-table rows-tree]]
             [sheetah.table :as table]
-
             [clojure.test :refer :all]))
-
-
 
 (deftest tree-test
   (testing "A simple vector tree"
@@ -39,7 +36,13 @@
               "val2c"
               [3
                {"val3a" [4 {"val4a" [5 nil]}],
-                "val3b" [6 {"val4b" [7 nil], "val4c" [8 nil]}]}]}]}))))
+                "val3b" [6 {"val4b" [7 nil], "val4c" [8 nil]}]}]}]})))
+  (testing "A map tree with duplicate in the input should return a map overridden"
+    (is (= (-> columns-tree-with-duplicate
+               (get "values")
+               st/tree-with-idx
+               st/treemap-with-idx)
+           {"val1a" [0 {"val2a" [1 nil], "val2b" [2 nil], "val2c" [7 nil]}]}))))
 
 (deftest tree-with-table-data-test
   (testing "A tree with table data associated"
