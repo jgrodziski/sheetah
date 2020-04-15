@@ -1,32 +1,23 @@
 {:paths ["src" "resources"],
- :deps
- {org.clojure/clojure {:mvn/version "1.10.1"},
-  com.google.api-client/google-api-client {:mvn/version "1.30.9"},
-  com.google.oauth-client/google-oauth-client-jetty {:mvn/version "1.30.4"},
-  com.google.apis/google-api-services-sheets {:mvn/version "v4-rev604-1.25.0"},
-  org.clojure/tools.deps.alpha {:mvn/version "0.8.677"}},
- :aliases
- {:test {:extra-paths ["test"], :extra-deps {org.clojure/test.check {:mvn/version "0.10.0"}}},
-  :runner
-  {:extra-deps
-   {com.cognitect/test-runner
-    {:git/url "https://github.com/cognitect-labs/test-runner",
-     :sha "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}},
-   :main-opts ["-m" "cognitect.test-runner" "-d" "test"]},
-  :jar
-  {:extra-deps {seancorfield/depstar {:mvn/version "0.5.2"}},
-   :main-opts ["-m" "hf.depstar.jar" "lib.jar"]},
-  :sync-pom
-  {:extra-deps
-   {metav/metav {:git/url "https://github.com/jgrodziski/metav.git",
-                 :tag "v1.6.7",
-                 :sha "38f08f0f9f7c3b26f0c001b15a5b05b71ac9e4cf"}
-                ;{:local/root "../metav"}
-    },
-   :main-opts ["-m" "metav.spit" "--pom"]},
-  :install
-  {:extra-deps {deps-deploy/deps-deploy {:mvn/version "0.0.9"}},
-   :main-opts ["-m" "deps-deploy.deps-deploy" "install" "lib.jar"]},
-  :deploy
-  {:extra-deps {deps-deploy/deps-deploy {:mvn/version "0.0.9"}},
-   :main-opts ["-m" "deps-deploy.deps-deploy" "deploy" "lib.jar"]}}}
+ :deps {org.clojure/clojure                               {:mvn/version "1.10.1"},
+        org.clojure/tools.deps.alpha                      {:mvn/version "0.8.677"},
+        com.google.api-client/google-api-client           {:mvn/version "1.30.9"},
+        com.google.oauth-client/google-oauth-client-jetty {:mvn/version "1.30.6"},
+        com.google.apis/google-api-services-sheets        {:mvn/version "v4-rev614-1.18.0-rc"}}
+ :aliases {:dev      {}
+           :test     {:extra-paths ["test"], :extra-deps {org.clojure/test.check {:mvn/version "0.10.0"}}},
+           :runner   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner",
+                                                              :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}},
+                      :main-opts ["-m" "cognitect.test-runner" "-d" "test"]},
+           :jar      {:extra-deps {seancorfield/depstar {:mvn/version "0.5.2"}},
+                      :main-opts  ["-m" "hf.depstar.jar" "lib.jar"]},
+           :sync-pom {:extra-deps {metav/metav {:git/url "https://github.com/jgrodziski/metav.git",
+                                                :tag     "v1.6.7",
+                                                :sha     "38f08f0f9f7c3b26f0c001b15a5b05b71ac9e4cf"}
+                                        ;{:local/root "../metav"}
+                                   },
+                      :main-opts  ["-m" "metav.spit" "--pom"]},
+           :install  {:extra-deps {deps-deploy/deps-deploy {:mvn/version "0.0.9"}},
+                      :main-opts  ["-m" "deps-deploy.deps-deploy" "install" "lib.jar"]},
+           :deploy   {:extra-deps {deps-deploy/deps-deploy {:mvn/version "0.0.9"}},
+                      :main-opts  ["-m" "deps-deploy.deps-deploy" "deploy" "lib.jar"]}}}
