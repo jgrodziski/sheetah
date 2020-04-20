@@ -1,6 +1,28 @@
 (ns sheetah.table
   (:require [clojure.string :refer [trim]]))
 
+(defn concat-tables
+  "Concat two or more raw tables. Before the concatenation between two tables,
+  the rows of the first table are filled with empty strings until each row have the same length"
+  [table & tables]
+  (loop [[f & r] tables
+         res table]
+    (if f
+      (let [max-length-row (apply max (map count res))
+            norm-table (map (fn [row]
+                              (let [row-length (count row)]
+                                (if (< row-length max-length-row)
+                                  (concat row (repeat (- max-length-row row-length) ""))
+                                  (seq row)))) res)]
+        (recur r (map-indexed (fn [idx row]
+                                (let [row-to-concat (if (< idx (count f))
+                                                      (nth f idx)
+                                                      nil)]
+                                  (if row-to-concat
+                                    (concat row row-to-concat)
+                                    row))) norm-table)))
+      (mapv vec res))))
+
 (defn normalize
   "Normalize the data found in the tabular structure by giving arbitrary names to the columns, adding predicate on the syntax of column's cells
   `table` is a list of the rows's datas as a vector of vector (aka. a table)
@@ -27,6 +49,3 @@
                                       (assoc res name norm-val)))
                              res))))]
     (map #(->> % (map trim) normalize-fn) table)))
-
-
-
