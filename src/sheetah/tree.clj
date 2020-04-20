@@ -47,17 +47,17 @@
                 (subvec (vec coll) start (min end (count coll)))
                 (subvec (vec coll) start (count coll)))) columns)))
 
-(defn- fill-empty-cells
+(defn- fill-empty-cells-and-trim
   "filled the inner columns until all are the size of the max one and fill with EMPTY_CELL"
   ([columns]
-   (fill-empty-cells columns (apply max (map count columns))))
+   (fill-empty-cells-and-trim columns (apply max (map count columns))))
   ([columns max-length]
-   (vec (map (fn [subcolumns] (concat subcolumns (repeat (- max-length (count subcolumns)) EMPTY_CELL))) columns))))
+   (vec (map (fn [subcolumns] (map clojure.string/trim (concat subcolumns (repeat (- max-length (count subcolumns)) EMPTY_CELL)))) columns))))
 
 (defn tree [columns]
   (when (not (empty? columns))
     (let [max-length (apply max (map count columns))
-          [firstcol :as filled-columns] (fill-empty-cells columns max-length)
+          [firstcol :as filled-columns] (fill-empty-cells-and-trim columns max-length)
           x->empty-cells-count (zipmap (filter (comp not empty-cell? ) firstcol)
                                        (empty-cells-count (vec firstcol) max-length))]
       (loop [xs firstcol
@@ -89,7 +89,7 @@
   ([offset columns]
    (when (not (empty? columns))
      (let [max-length (apply max (map count columns))
-           [firstcol :as filled-columns] (fill-empty-cells columns max-length)
+           [firstcol :as filled-columns] (fill-empty-cells-and-trim columns max-length)
            x->empty-cells-count (zipmap (filter (comp not empty-cell? ) firstcol)
                                         (empty-cells-count (vec firstcol) max-length))]
        (loop [xs firstcol
