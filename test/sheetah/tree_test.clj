@@ -1,8 +1,9 @@
 (ns sheetah.tree-test
   (:require [sheetah.tree :as st :refer :all]
             [sheetah.core :as core]
-            [sheetah.core-test :refer [columns-table columns-tree columns-tree-with-duplicate rows-table rows-tree]]
+            [sheetah.core-test :as core-test :refer [columns-table columns-tree columns-tree-with-duplicate rows-table rows-tree]]
             [sheetah.table :as table]
+            [sheetah.table-test :as table-test]
             [clojure.test :refer :all]))
 
 (deftest tree-test
@@ -63,3 +64,31 @@
                 [["FALSE" "object" "val1, val2, val3" "Hey"]
                  {"val4b" [["TRUE" "string" "val1, val2, val3" "Yo"] nil],
                   "val4c" [["TRUE" "boolean" "" "1"] nil]}]}]}]}))))
+
+(deftest ^:integration tree-with-associated-table-test
+  (testing "Retrieving a tree with associated table values"
+    (is (= (tree-with-associated-table core-test/TEST_SHEET_ID core-test/TEST_SHEET_NAME "testTreeRange" "testTableRange")
+           {"val1a"
+            [["TRUE" "string" "val1, val2, val3" "val1a is a super thing"]
+             {"val2a" [["FALSE" "string" "val1 " "val2a attribute is awesome"] nil],
+              "val2b" [["TRUE" "integer" "val2" "nothing to say"] nil],
+              "val2c"
+              [["TRUE" "integer" "val1, val2 " "Humm"]
+               {"val3a"
+                [["TRUE" "object" "val1, val2, val3" "Ho"]
+                 {"val4a" [["TRUE" "string" "val1, val2, val3" "Ha"] nil]}],
+                "val3b"
+                [["FALSE" "object" "val1, val2, val3" "Hey"]
+                 {"val4b" [["TRUE" "string" "val1, val2, val3" "Yo"] nil],
+                  "val4c" [["TRUE" "boolean" "" "1"] nil]}]}]}]})))
+  (testing "Retrieving a tree with associated normalized table values"
+    (is (= (tree-with-associated-table core-test/TEST_SHEET_ID core-test/TEST_SHEET_NAME "testTreeRange" "testTableRange" table-test/cols-structure)
+           {"val1a" [{:detail-2 true, :detail-1 "string", :detail-3 "val1, val2, val3", :detail-4 "val1a is a super thing"}
+             {"val2a" [{:detail-2 false, :detail-1 "string", :detail-3 "val1", :detail-4 "val2a attribute is awesome"} nil],
+              "val2b" [{:detail-2 true, :detail-1 "integer", :detail-3 "val2", :detail-4 "nothing to say"} nil],
+              "val2c" [{:detail-2 true, :detail-1 "integer", :detail-3 "val1, val2", :detail-4 "Humm"}
+                       {"val3a" [{:detail-2 true, :detail-1 "object", :detail-3 "val1, val2, val3", :detail-4 "Ho"}
+                                 {"val4a" [{:detail-2 true, :detail-1 "string", :detail-3 "val1, val2, val3", :detail-4 "Ha"} nil]}],
+                        "val3b" [{:detail-2 false, :detail-1 "object", :detail-3 "val1, val2, val3", :detail-4 "Hey"}
+                                 {"val4b" [{:detail-2 true, :detail-1 "string", :detail-3 "val1, val2, val3", :detail-4 "Yo"} nil],
+                                  "val4c" [{:detail-2 true, :detail-1 "boolean", :detail-3 "", :detail-4 "1"} nil]}]}]}]}))))

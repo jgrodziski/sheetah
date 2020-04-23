@@ -1,4 +1,6 @@
-(ns sheetah.tree)
+(ns sheetah.tree
+  (:require [sheetah.core :as sheetah]
+            [sheetah.table :as stable]))
 
 (def EMPTY_CELL "")
 (defn empty-cell? [s]
@@ -153,6 +155,22 @@
                    acc)) {} treemap)
     nil))
 
+
+(defn tree-with-associated-table
+  "Given a `tree` and a `table` range, build a treemap
+  where the nodes of the tree are associated to their corresponding details as table rows on the same row index
+  `rows-details` is a vector of maps with the keys `:name` (associate a detail with with a name) and `:fn` (apply the function to the detail)"
+  ([sheet-id sheet-name tree-range table-range]
+   (tree-with-associated-table sheet-id sheet-name tree-range table-range nil))
+  ([sheet-id sheet-name tree-range table-range rows-details]
+   (let [tree  (sheetah/columns sheet-id sheet-name tree-range)
+         table (sheetah/rows    sheet-id sheet-name table-range)]
+     (-> (get tree "values")
+         (tree-with-idx)
+         (treemap-with-idx)
+         (assoc-table-rows (if rows-details
+                             (stable/normalize (get table "values") rows-details)
+                             (get table "values")))))))
 
 (comment
   (tree [[:a ""  ""  :b :c :d ""  ""  ""  ""  ""  ""   ""    ""]

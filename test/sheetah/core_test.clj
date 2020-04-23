@@ -2,8 +2,8 @@
   (:require [clojure.test :refer :all]
             [sheetah.core :refer :all]))
 
-(def API_NG_SHEET_ID "16Q1iN4mJ_-nURLQxTdoWoYoal7YxuvcdKo3tgjCjm1M" )
-(def DIFFUSION_API_SHEET_NAME "Diffusion-API-Endpoints")
+(def TEST_SHEET_ID "1O5-a8AIVMavgMDfNhUb5dYm1ZlNkPPYCmV-HiIy6xZM" )
+(def TEST_SHEET_NAME "test")
 
 (def columns-tree {"majorDimension" "COLUMNS",
                    "range" "test!A2:D10",
