@@ -52,6 +52,22 @@ You need to retrieve the identifier of your sheet, the URL contains it, and put 
 
 ```
 
+### Write values in the google sheets
+
+You can also write values in a range of your sheet
+
+```clojure
+
+(require '[sheetah.core :as sheet])
+(sheet/write-rows "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "my-named-range"
+                  [["titi" "toto"] ["tata"]])
+(sheet/write-columns "16Q1iN4mJ_-nURLQxTpoWoYoal7YxujcdKo9tgjWjm1M" "your-sheet-name" "my-named-range"
+                     [["titi" "=1+2"]] sheet/USER-ENTERED)
+```
+
+The values need to be in a vector of vectors. The size of the vectors need to be smaller than the size in the range.
+You can use the ValueInputOption **USER-ENTERED** in order
+to evaluate the cells's content. For example `=1+2` becomes `3` in the cell.
 ### Transform values as a tree
 
 2d array are easy to get but a tree structure is more interesting

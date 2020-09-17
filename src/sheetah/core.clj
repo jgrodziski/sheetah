@@ -24,7 +24,7 @@
   ([transport creds]
    (with-open [rdr (io/reader (io/resource creds))]
      (let [client-secrets (GoogleClientSecrets/load JSON_FACTORY rdr)
-           flow (-> (GoogleAuthorizationCodeFlow$Builder. transport JSON_FACTORY client-secrets (java.util.ArrayList. [SheetsScopes/SPREADSHEETS_READONLY]))
+           flow (-> (GoogleAuthorizationCodeFlow$Builder. transport JSON_FACTORY client-secrets (java.util.ArrayList. [SheetsScopes/SPREADSHEETS]))
                     (.setDataStoreFactory FILE_DATA_STORE_FACTORY)
                     (.setAccessType "offline")
                     (.build))
@@ -49,3 +49,28 @@
 (defn columns [sheet-id sheet-name range] (cells-values sheet-id sheet-name range "COLUMNS"))
 (defn rows    [sheet-id sheet-name range] (cells-values sheet-id sheet-name range "ROWS"))
 
+(defn write-cells-values [sheet-id sheet-name range major-dim values value-input-option]
+  (let [value-range (-> (ValueRange.)
+                        (.setValues values)
+                        (.setMajorDimension major-dim))]
+    (-> (sheets)
+        (.spreadsheets)
+        (.values)
+        (.update sheet-id (str sheet-name "!" range) value-range)
+        (.setValueInputOption value-input-option)
+        (.execute))))
+
+(def RAW "RAW")
+(def USER-ENTERED "USER_ENTERED")
+
+(defn write-columns
+  ([sheet-id sheet-name range values]
+   (write-columns sheet-id sheet-name range values RAW))
+  ([sheet-id sheet-name range values value-input-option]
+   (write-cells-values sheet-id sheet-name range "COLUMNS" values value-input-option)))
+
+(defn write-rows
+  ([sheet-id sheet-name range values]
+   (write-rows sheet-id sheet-name range values RAW))
+  ([sheet-id sheet-name range values value-input-option]
+   (write-cells-values sheet-id sheet-name range "ROWS" values value-input-option)))
