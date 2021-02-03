@@ -49,7 +49,7 @@
 (defn columns [sheet-id sheet-name range] (cells-values sheet-id sheet-name range "COLUMNS"))
 (defn rows    [sheet-id sheet-name range] (cells-values sheet-id sheet-name range "ROWS"))
 
-(defn write-cells-values [sheet-id sheet-name range major-dim values value-input-option]
+(defn- write-cells-values [sheet-id sheet-name range major-dim values value-input-option]
   (let [value-range (-> (ValueRange.)
                         (.setValues values)
                         (.setMajorDimension major-dim))]
@@ -74,3 +74,21 @@
    (write-rows sheet-id sheet-name range values RAW))
   ([sheet-id sheet-name range values value-input-option]
    (write-cells-values sheet-id sheet-name range "ROWS" values value-input-option)))
+
+(defn- update-cells-values [sheet-id sheet-name range major-dim update-fn value-input-option]
+  (let [values (get ((case major-dim
+                       :row rows
+                       :column columns) sheet-id sheet-name range)
+                    "values")
+        updated-values (update-fn values)]
+    ((case major-dim
+       :row write-rows
+       :column write-columns) sheet-id sheet-name range updated-values value-input-option)))
+
+(defn update-rows
+  ([sheet-id sheet-name range update-fn] (update-rows sheet-id sheet-name range update-fn RAW))
+  ([sheet-id sheet-name range update-fn value-input-option] (update-cells-values sheet-id sheet-name range :row update-fn value-input-option)))
+
+(defn update-columns
+  ([sheet-id sheet-name range update-fn] (update-columns sheet-id sheet-name range update-fn RAW))
+  ([sheet-id sheet-name range update-fn value-input-option] (update-cells-values sheet-id sheet-name range :column update-fn value-input-option)))
