@@ -1,6 +1,7 @@
 (ns sheetah.core
   (:require [clojure.java.io :as io])
   (:import com.google.api.client.auth.oauth2.Credential
+           com.google.api.client.googleapis.auth.oauth2.GoogleCredential
            com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
            com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver$Builder
            com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow$Builder
@@ -18,7 +19,7 @@
 (def FILE_DATA_STORE_FACTORY (FileDataStoreFactory. (io/file "/tmp/tokens")))
 (def APPLICATION_NAME "sheetah-v0.0.1")
 
-(defn credentials
+#_(defn credentials
   ([transport]
    (credentials transport nil))
   ([transport creds]
@@ -33,12 +34,19 @@
            receiver (-> (LocalServerReceiver$Builder.) (.setPort 8888) (.build))]
        (-> (AuthorizationCodeInstalledApp. flow receiver) (.authorize "user"))))))
 
+(defn credentials [creds]
+  (with-open [is (io/input-stream creds)]
+    (->
+     (GoogleCredential/fromStream is)
+     (.createScoped (java.util.ArrayList. [SheetsScopes/SPREADSHEETS]) ))))
+
+
 (defn sheets
   (^com.google.api.services.sheets.v4.Sheets []
    (sheets "credentials.json"))
   (^com.google.api.services.sheets.v4.Sheets [creds]
    (let [transport (GoogleNetHttpTransport/newTrustedTransport)
-         sheets    (-> (Sheets$Builder. transport JSON_FACTORY (credentials transport creds))
+         sheets    (-> (Sheets$Builder. transport JSON_FACTORY (credentials creds))
                     (.setApplicationName APPLICATION_NAME)
                     (.build))]
      sheets)))
