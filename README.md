@@ -29,7 +29,7 @@ A use case I had was to work on API definition and structure, then generating so
 
 ```clojure
 {sheetah {:git/url "git@github.com:jgrodziski/sheetah.git" 
-          :sha "dc74f769ce748e95619aed7fa1d39b76db1ffb6b"}}
+          :sha "82d0cbe0d485bb5dd516ce30fb09d52e8b44730c"}}
 ```
 
 ## Usage

@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>sheetah</groupId>
   <artifactId>sheetah</artifactId>
-  <version>0.1.0-0x9a0a.DIRTY</version>
+  <version>1.0.0</version>
   <name>sheetah</name>
   <dependencies>
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.10.1</version>
+      <version>1.10.3</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
@@ -17,19 +17,19 @@
       <version>0.8.677</version>
     </dependency>
     <dependency>
-      <groupId>com.google.oauth-client</groupId>
-      <artifactId>google-oauth-client-jetty</artifactId>
-      <version>1.30.4</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
       <version>1.30.9</version>
     </dependency>
     <dependency>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client-jetty</artifactId>
+      <version>1.30.6</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-sheets</artifactId>
-      <version>v4-rev604-1.25.0</version>
+      <version>v4-rev614-1.18.0-rc</version>
     </dependency>
   </dependencies>
   <build>

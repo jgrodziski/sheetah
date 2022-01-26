@@ -1,16 +1,21 @@
 {:paths ["src" "resources"],
- :deps {org.clojure/clojure                               {:mvn/version "1.10.1"},
+ :deps {org.clojure/clojure                               {:mvn/version "1.10.3"},
         org.clojure/tools.deps.alpha                      {:mvn/version "0.8.677"},
-        com.google.api-client/google-api-client           {:mvn/version "1.30.9"},
-        com.google.oauth-client/google-oauth-client-jetty {:mvn/version "1.30.6"},
+        com.google.api-client/google-api-client           {:mvn/version "1.33.1"},
+        com.google.oauth-client/google-oauth-client-jetty {:mvn/version "1.33.0"},
         com.google.apis/google-api-services-sheets        {:mvn/version "v4-rev614-1.18.0-rc"}}
  :aliases {:dev      {}
            :test     {:extra-paths ["test"], :extra-deps {org.clojure/test.check {:mvn/version "0.10.0"}}},
            :runner   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner",
                                                               :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}},
                       :main-opts ["-m" "cognitect.test-runner" "-d" "test"]},
-           :jar      {:extra-deps {seancorfield/depstar {:mvn/version "0.5.2"}},
-                      :main-opts  ["-m" "hf.depstar.jar" "lib.jar"]},
+           :release  {:extra-deps {metav/metav {:local/root "../metav"}}
+                      :main-opts  ["-m" "metav.release"]
+                      }
+           :jar      {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.211"}},
+                      :exec-fn hf.depstar/jar
+                      :exec-args {:jar "target/sheetah.jar"
+                                  :sync-pom true :version "1.0.0"}},
            :sync-pom {:extra-deps {metav/metav {:git/url "https://github.com/jgrodziski/metav.git",
                                                 :tag     "v1.6.7",
                                                 :sha     "38f08f0f9f7c3b26f0c001b15a5b05b71ac9e4cf"}
