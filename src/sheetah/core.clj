@@ -35,10 +35,11 @@
        (-> (AuthorizationCodeInstalledApp. flow receiver) (.authorize "user"))))))
 
 (defn credentials [creds]
-  (with-open [is (io/input-stream creds)]
-    (->
-     (GoogleCredential/fromStream is)
-     (.createScoped (java.util.ArrayList. [SheetsScopes/SPREADSHEETS]) ))))
+  (let [creds' (or creds "credentials.json")]
+    (with-open [is (io/input-stream (or (io/resource creds') creds'))]
+      (->
+        (GoogleCredential/fromStream is)
+        (.createScoped (java.util.ArrayList. [SheetsScopes/SPREADSHEETS]))))))
 
 
 (defn sheets
