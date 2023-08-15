@@ -1,4 +1,4 @@
-# Sheetah
+# Sheetah - Convenient Google Sheets integration in Clojure
 
 Clojure library for convenient access and processing of data in a Google Sheet.
 
